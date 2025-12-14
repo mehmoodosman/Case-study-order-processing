@@ -11,11 +11,16 @@ st.set_page_config(page_title="Sales Order Extractor", page_icon="📜", layout=
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-EXTRACTION_PROMPT = """You are a data extraction specialist. Extract the following information from the provided sales order document and email content.
+EXTRACTION_PROMPT = """You are a data extraction specialist. Extract the following information from the provided two inputs containing sales receipt document and sales email receipt.
 
-Extract EXACTLY these fields in the format shown below. If a field is not found, write "Not found".
+<Input>
+Sales receipt document: {pdf_content},
+Sales email receipt: {email_content}
+</Input>
 
-Expected output format:
+Extract EXACTLY these fields in the format shown below. If a field is not found, leave it as an empty string like this "".
+
+<OutputFormat>
 Buyer:
 • buyer_company_name: [extracted value]
 • buyer_person_name: [extracted value]
@@ -32,17 +37,14 @@ Product: (repeat for each product)
 • position: [extracted value]
 • article_code: [extracted value]
 • quantity: [extracted value]
+</OutputFormat>
 
----
-DOCUMENT CONTENT:
-{pdf_content}
 
----
-EMAIL CONTENT:
-{email_content}
 
----
-Extract the data now in the exact format specified above:"""
+Think step by step in your approach.
+Extract the data only in the exact format specified above only referencing exactly information from the inputs. 
+Always ensure to use information in input exactly as it is without any additional text or formatting.
+"""
 
 
 def extract_pdf_text(pdf_file) -> str:
